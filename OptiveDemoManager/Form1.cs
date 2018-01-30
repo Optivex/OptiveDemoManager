@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace OptiveDemoManager
 {
@@ -16,6 +17,7 @@ namespace OptiveDemoManager
     {
         public OptiveDemoManager() //When the program is launched.
         {
+            InitTimer();
             InitializeComponent();
             ImportSavedSettings();
             Log(""); //Leave a line each time the program is reloaded.
@@ -494,6 +496,54 @@ namespace OptiveDemoManager
             {
                 MessageLabel.Text = "Failed to delete the demo, it might not be there.";
             }
+        }
+
+        private void IsProcessRunning(string sProcessName)
+        {
+            System.Diagnostics.Process[] proc = System.Diagnostics.Process.GetProcessesByName(sProcessName);
+            if (proc.Length > 0)
+            {
+                //TF2 is running!
+                MessageLabel.Text = "TF2 running.";
+            }
+            else
+            {
+                //TF2 is not running!
+                MessageLabel.Text = "TF2 closed.";
+                //System.Threading.Thread.Sleep(30000); //Sleep for 30 seconds.
+
+                ProcessStartInfo RunSteamTF2 = new ProcessStartInfo();
+                RunSteamTF2.FileName = (@"C:\Program Files (x86)\Steam\Steam.exe");
+                RunSteamTF2.Arguments = "-applaunch 440 " + File.ReadAllText("TF2LaunchOptions.txt").Trim();
+                Process.Start(RunSteamTF2);
+            }
+        }
+
+        private Timer timer1; //Timer that will be used to check if the game is running every few seconds.
+        public void InitTimer() //Initiate timer function, it mnust be called on form_load.
+        {
+            timer1 = new Timer();
+            timer1.Tick += new EventHandler(timer1_Tick);
+            timer1.Interval = 15000; // in miliseconds
+            timer1.Start();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e) //When the timer ticks.
+        {
+            if (KeepTF2Running.Checked == true)
+            {
+                IsProcessRunning("hl2");
+            }
+            else
+            {
+                //Do nothing
+            }
+            
+        }
+
+        private void LaunchTF2Now_Click(object sender, EventArgs e)
+        {
+            IsProcessRunning("hl2");
         }
     }
 }

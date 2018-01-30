@@ -21,26 +21,32 @@ namespace OptiveDemoManager
             if (File.Exists("DemosFolderPath.txt")) //If there is a saved file there it will load it.
             {
                 DemosFolderPath.Text = "";
-                string CaptureDemosFolderPath = File.ReadAllText("DemosFolderPath.txt"); //Read the text file to a string. //This is how the main program will grab these strings later.
+                string CaptureDemosFolderPath = File.ReadAllText("DemosFolderPath.txt").Trim(); //Read the text file to a string. //This is how the main program will grab these strings later.
                 DemosFolderPath.Text = CaptureDemosFolderPath; //Replace the path with that of the text file.
             }
             if (File.Exists("NewDemosFolderPath.txt")) //If there is a saved file there it will load it too.
             {
                 NewDemosFolderPath.Text = "";
-                string CaptureNewDemosFolderPath = File.ReadAllText("NewDemosFolderPath.txt"); //Read the text file to a string.
+                string CaptureNewDemosFolderPath = File.ReadAllText("NewDemosFolderPath.txt").Trim(); //Read the text file to a string.
                 NewDemosFolderPath.Text = CaptureNewDemosFolderPath; //Replace the path with that of the text file.
             }
             if (File.Exists("CfgFolderPath.txt")) //If there is a saved file there it will load it too.
             {
                 CfgFolderPath.Text = "";
-                string CaptureCfgFolderPath = File.ReadAllText("CfgFolderPath.txt"); //Read the text file to a string.
+                string CaptureCfgFolderPath = File.ReadAllText("CfgFolderPath.txt").Trim(); //Read the text file to a string.
                 CfgFolderPath.Text = CaptureCfgFolderPath; //Replace the path with that of the text file.
             }
             if (File.Exists("ToggleRecordAlias.txt")) //If there is a saved file there it will load it too.
             {
                 ToggleRecordAlias.Text = "";
-                string CaptureToggleRecordAlias = File.ReadAllText("ToggleRecordAlias.txt"); //Read the text file to a string.
+                string CaptureToggleRecordAlias = File.ReadAllText("ToggleRecordAlias.txt").Trim(); //Read the text file to a string.
                 ToggleRecordAlias.Text = CaptureToggleRecordAlias; //Replace the path with that of the text file.
+            }
+            if (File.Exists("TF2LaunchOptions.txt")) //If there is a saved file there it will load it too.
+            {
+                TF2LaunchOptions.Text = "";
+                string CaptureTF2LaunchOptions = File.ReadAllText("TF2LaunchOptions.txt").Trim(); //Read the text file to a string.
+                TF2LaunchOptions.Text = CaptureTF2LaunchOptions; //Replace the path with that of the text file.
             }
             if (File.Exists("QuitGame.txt")) //If there is a saved file there it will load it too.
             {
@@ -90,7 +96,16 @@ namespace OptiveDemoManager
             sw1.WriteLine(ToggleRecordAlias.Text.Trim()); //Write what is in the text box into the doc.
             sw1.Close(); fs1.Close();  //Close when done.
 
-            if(QuitGameCheckBox.Checked == true) //Save a QuitGame.txt so the main form knows to add this
+            //TF2LaunchOptions to new hidden file TF2LaunchOptions.txt
+            File.Delete("TF2LaunchOptions.txt"); //Delete before creating one. If there was one it should have been loaded into the program/textbox.
+            FileStream fs4 = File.Create("TF2LaunchOptions.txt"); //Create text file.
+            File.SetAttributes("TF2LaunchOptions.txt", FileAttributes.Hidden); //Make hidden fo cleanliness.
+            StreamWriter sw4 = new StreamWriter(fs4); //Start new streamwriter to write to the doc.
+            sw4.BaseStream.Seek(0, SeekOrigin.End); //Idk what this does.
+            sw4.WriteLine(TF2LaunchOptions.Text.Trim()); //Write what is in the text box into the doc.
+            sw4.Close(); fs4.Close();  //Close when done.
+
+            if (QuitGameCheckBox.Checked == true) //Save a QuitGame.txt so the main form knows to add this
             {
                 File.Delete("QuitGame.txt"); //Delete before creating one. If there was one it should have been loaded into the program/textbox.
                 FileStream QuitGamefs = File.Create("QuitGame.txt"); //Create text file.
@@ -177,6 +192,11 @@ namespace OptiveDemoManager
         private void ToggleRecordAliasAviRecorder_Click(object sender, EventArgs e)
         {
             ToggleRecordAlias.Text = "avi_recorder_startstop";
+        }
+
+        private void TF2LaunchOptionsClear_Click(object sender, EventArgs e)
+        {
+            TF2LaunchOptions.Text = "";
         }
     }
 }
